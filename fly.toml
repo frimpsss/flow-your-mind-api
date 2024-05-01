@@ -1,13 +1,12 @@
-# fly.toml app configuration file generated for flow-your-mind on 2024-05-01T14:00:46Z
+# fly.toml app configuration file generated for flow-mind-api on 2024-05-01T19:05:09Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'flow-your-mind'
+app = 'flow-mind-api'
 primary_region = 'lhr'
 
 [build]
-  dockerfile = "./dockerfile"
 
 [http_service]
   internal_port = 9090

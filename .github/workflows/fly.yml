@@ -12,15 +12,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Change directory
-        run: cd server
-
+        
       - name: Setup flyctl
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy with flyctl
-        run: flyctl deploy 
+        run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}

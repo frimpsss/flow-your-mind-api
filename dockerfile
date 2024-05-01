@@ -1,4 +1,8 @@
 FROM node:alpine
+
+ARG DB_URL=unknown
+ENV DATABASE_URL=$DB_URL
+
 WORKDIR /
 COPY package*.json ./
 RUN npm cache clean --force

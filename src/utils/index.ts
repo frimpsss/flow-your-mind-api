@@ -4,6 +4,7 @@ import { CorsOptions } from "cors";
 const whiteList = [
   "http://localhost:3000",
   "https://flow-your-mind-test.vercel.app",
+  "https://flow-your-mind.vercel.app"
 ];
 export const corsOptions: CorsOptions = {
   origin(requestOrigin, callback) {

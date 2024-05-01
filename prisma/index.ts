@@ -4,10 +4,4 @@ export const dburl =
     ? process.env.DATABASE_URL
     : process.env.PROD_DATABASE_URL;
 
-export const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: dburl,
-    },
-  },
-});
+export const prisma = new PrismaClient();

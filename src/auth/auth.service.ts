@@ -27,7 +27,7 @@ export function createAccessToken(payload: string) {
     { userId: payload },
     process.env.ACCESS_TOKEN_SECRET as string,
     {
-      expiresIn: "15m",
+      expiresIn: "15d",
     }
   );
 }

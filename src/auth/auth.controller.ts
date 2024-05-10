@@ -23,6 +23,7 @@ export class AuthController {
         username,
         password,
       });
+
       const founduser = await prisma.user.findUnique({
         where: {
           username,
@@ -35,6 +36,7 @@ export class AuthController {
           false
         );
       }
+
       const hashed_password = await hashPassword(password);
       await prisma.user.create({
         data: {
@@ -170,7 +172,6 @@ export class AuthController {
         },
       });
 
-
       return new CustomResponse(HttpStatusCode.Ok, "Log in succesful", true, {
         username: founduser.username,
         access_token: accessToken,
@@ -228,7 +229,7 @@ export class AuthController {
                 id: userId,
               },
             });
-            //og("possible user: ", possibleUser);
+
             if (possibleUser) {
               await prisma.user.update({
                 where: {

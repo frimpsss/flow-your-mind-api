@@ -23,6 +23,9 @@ app.use("/api", authRouter, messageRouter);
 app.all("/", (req: Request, res: Response) => {
   return res.status(HttpStatusCode.Ok).send("Flow your mind API");
 });
+app.all("/ping", (req: Request, res: Response) => {
+  return res.status(HttpStatusCode.Ok).send("pong");
+});
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
   return res.status(HttpStatusCode.NotFound).send({
     status: false,
@@ -31,6 +34,6 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 
 app.listen(port, async () => {
-  await prisma.$connect()
+  await prisma.$connect();
   //og(`Server up and spinning on port: ${port}`);
 });

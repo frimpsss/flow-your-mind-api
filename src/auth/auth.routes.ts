@@ -30,7 +30,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
         maxAge: 60 * 60 * 60 * 60 * 60,
         path: "/",
         secure: true,
-        sameSite: "none",
+        sameSite: "strict",
       })
       .status(response.statusCode)
       .send({
@@ -58,7 +58,7 @@ authRouter.get("/refresh", async (req: Request, res: Response) => {
         maxAge: 60 * 60 * 60 * 60 * 60,
         path: "/",
         secure: true,
-        sameSite: "none",
+        sameSite: "strict",
       })
       .status(response.statusCode)
       .send({

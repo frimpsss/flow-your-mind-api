@@ -24,11 +24,15 @@ export class AuthController {
         password,
       });
 
-      const founduser = await prisma.user.findUnique({
+      const founduser = await prisma.user.findFirst({
         where: {
-          username,
+          username: {
+            contains: username,
+            mode: "insensitive",
+          },
         },
       });
+
       if (founduser) {
         return new CustomResponse(
           HttpStatusCode.Conflict,
@@ -46,7 +50,7 @@ export class AuthController {
       });
       return new CustomResponse(
         HttpStatusCode.Created,
-        "Sign up succesful",
+        "Sign up successful",
         true
       );
     } catch (error: any) {
@@ -78,9 +82,12 @@ export class AuthController {
         username,
         password,
       });
-      const founduser = await prisma.user.findUnique({
+      const founduser = await prisma.user.findFirst({
         where: {
-          username,
+          username: {
+            contains: username,
+            mode: "insensitive",
+          },
         },
       });
 

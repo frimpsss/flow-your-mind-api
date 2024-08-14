@@ -1,7 +1,7 @@
 import { z } from "zod";
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/;
 const  nameRegex = /^(?:\S|_)+$/;
-export const restrictedNames: String[] = ["login", "register", "account", "messages"];
+export const restrictedNames: String[] = ["login", "register", "account", "messages", "custom"];
 export const authInputSchema = z.object({
   username: z
     .string()

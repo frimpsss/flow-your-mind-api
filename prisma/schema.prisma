@@ -11,11 +11,13 @@ datasource db {
 }
 
 model User {
-  id       String    @unique @default(cuid())
-  username String    @unique
-  password String
-  messages Message[]
-  tokens   String[]  @default([])
+  id        String     @unique @default(cuid())
+  username  String     @unique
+  password  String
+  messages  Message[]
+  tokens    String[]   @default([])
+  createdOn DateTime?  @default(now())
+  questions Question[]
 }
 
 model Message {
@@ -23,6 +25,17 @@ model Message {
   content      String
   isOpened     Boolean?  @default(false)
   reciepientId String
-  reciepient   User      @relation(fields: [reciepientId], references: [id])
+  reciepient   User      @relation(fields: [reciepientId], references: [id], onDelete: Cascade)
   createdOn    DateTime? @default(now())
+  questionId   String?
+  question     Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id        String    @unique @default(cuid())
+  title     String
+  messages  Message[]
+  createdOn DateTime? @default(now())
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

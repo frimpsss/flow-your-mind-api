@@ -8,20 +8,61 @@ export class MessageController {
    */
   public async createMessage(
     id: string,
-    message: string
+    message: string,
+    questionId?: string
   ): Promise<CustomResponse<any | Error>> {
     try {
       const encryptedMessage = encryptText(message);
+      let qId = await prisma.question.findUnique({
+        where: {
+          id: questionId || "",
+        },
+      });
       await prisma.message.create({
         data: {
           content: encryptedMessage,
           reciepientId: id,
+          questionId: qId ? qId.id : null,
         },
       });
       return new CustomResponse(
         HttpStatusCode.Created,
-        "Message sent succesfully",
+        "Message sent successfully",
         true
+      );
+    } catch (error: any) {
+      console.log(error);
+      return new CustomResponse(
+        HttpStatusCode.InternalServerError,
+        error?.message,
+        false
+      );
+    }
+  }
+
+  /**
+   * userCreateCustomMessage
+   */
+  public async userCreateCustomQuestion({
+    title,
+    userId,
+  }: {
+    title: string;
+    userId: string;
+  }): Promise<CustomResponse<{} | Error>> {
+    try {
+      const createdQuestion = await prisma.question.create({
+        data: {
+          title,
+          userId,
+        },
+      });
+
+      return new CustomResponse(
+        HttpStatusCode.Ok,
+        "Question created successfully",
+        true,
+        createdQuestion
       );
     } catch (error: any) {
       return new CustomResponse(
@@ -31,7 +72,6 @@ export class MessageController {
       );
     }
   }
-
   public async getUnopendMeaages(
     id: string
   ): Promise<CustomResponse<number | Error>> {
@@ -96,8 +136,9 @@ export class MessageController {
   }
 
   public async getUserId(
-    username: string
-  ): Promise<CustomResponse<string | Error>> {
+    username: string,
+    questionId?: string
+  ): Promise<CustomResponse<{} | Error>> {
     try {
       if (!username.trim()) {
         return new CustomResponse(
@@ -106,21 +147,28 @@ export class MessageController {
           false
         );
       }
+
       const founduser = await prisma.user.findUnique({
         where: {
           username,
         },
       });
+
       if (!founduser) {
         return new CustomResponse(404, "Username not found", false);
       }
 
-      return new CustomResponse(
-        HttpStatusCode.Ok,
-        "User id retrieved",
-        true,
-        founduser.id
-      );
+      const foundQuestion = await prisma.question.findFirst({
+        where: {
+          userId: founduser.id,
+          id: questionId || "",
+        },
+      });
+
+      return new CustomResponse(HttpStatusCode.Ok, "User id retrieved", true, {
+        userId: founduser.id,
+        question: foundQuestion?.title,
+      });
     } catch (error: any) {
       return new CustomResponse(
         HttpStatusCode.InternalServerError,
@@ -148,7 +196,20 @@ export class MessageController {
           id: userId,
         },
         select: {
-          messages: true,
+          messages: {
+            select: {
+              question: {
+                select: {
+                  title: true,
+                },
+              },
+              id: true,
+              content: true,
+              reciepientId: true,
+              createdOn: true,
+              isOpened: true,
+            },
+          },
         },
       });
 
@@ -160,15 +221,21 @@ export class MessageController {
         );
       }
 
-      const message = founduser.messages.find(
-        (m: {
-          id: string;
-          content: string;
-          isOpened: boolean | null;
-          reciepientId: string;
-          createdOn: Date | null;
-        }) => m.id === messageId
-      );
+      // const message = founduser.messages.find(
+      //   (m: {
+      //     id: string;
+      //     content: string;
+      //     isOpened: boolean | null;
+      //     reciepientId: string;
+      //     createdOn: Date | null;
+      //     question: {
+      //       title: {
+      //         st
+      //       }
+      //     }
+      //   }) => m.id === messageId
+      // );
+      const message = founduser.messages.find((m: any) => m.id === messageId);
       if (!message) {
         return new CustomResponse(
           HttpStatusCode.BadRequest,
@@ -187,12 +254,63 @@ export class MessageController {
           },
         });
       }
-      const msg = new SingleMessageDTO(message);
+      console.log(message);
+      const msg = new SingleMessageDTO(message as any);
       return new CustomResponse(
         HttpStatusCode.Ok,
         "message retieved",
         true,
         msg
+      );
+    } catch (error: unknown) {
+      return new CustomResponse(
+        HttpStatusCode.InternalServerError,
+        error instanceof Error ? error?.message : (error as string),
+        false
+      );
+    }
+  }
+
+  /**
+   * deleteAllMessages
+   */
+  public async deleteAllMessages(userId: string): Promise<CustomResponse<any>> {
+    try {
+      const all_messages = await prisma.message.deleteMany({
+        where: {
+          reciepientId: userId,
+        },
+      });
+
+      return new CustomResponse(
+        HttpStatusCode.Ok,
+        "All messages deleted",
+        true,
+        {}
+      );
+    } catch (error: unknown) {
+      return new CustomResponse(
+        HttpStatusCode.InternalServerError,
+        error instanceof Error ? error?.message : (error as string),
+        false
+      );
+    }
+  }
+
+  public async allCustomQuestions(
+    userId: string
+  ): Promise<CustomResponse<any>> {
+    try {
+      const all_ques = await prisma.question.findMany({
+        where: {
+          userId: userId,
+        },
+      });
+      return new CustomResponse(
+        HttpStatusCode.Ok,
+        "All ques retrieved",
+        true,
+        all_ques
       );
     } catch (error: unknown) {
       return new CustomResponse(

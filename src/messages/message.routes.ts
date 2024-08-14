@@ -7,11 +7,24 @@ const messageController = new MessageController();
 messageRouter.post("/message", async (req: Request, res: Response) => {
   const response = await messageController.createMessage(
     req.body.username,
-    req.body.message
+    req.body.message,
+    req.body.questionId
   );
 
   res.status(response.statusCode).send(response);
 });
+messageRouter.post(
+  "/message/custom-question",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    const response = await messageController.userCreateCustomQuestion({
+      title: req.body.title,
+      userId: req.body.userId,
+    });
+
+    res.status(response.statusCode).send(response);
+  }
+);
 messageRouter.get(
   "/messages",
   verifyToken,
@@ -33,9 +46,12 @@ messageRouter.get(
 );
 
 messageRouter.get(
-  "/username/:username",
+  "/username/:username/",
   async (req: Request, res: Response) => {
-    const response = await messageController.getUserId(req.params.username);
+    const response = await messageController.getUserId(
+      req.params.username,
+      String(req?.query?.["questionId"])
+    );
     res.status(response.statusCode).send(response);
   }
 );
@@ -51,3 +67,20 @@ messageRouter.get(
     res.status(response.statusCode).send(response);
   }
 );
+messageRouter.delete(
+  "/message",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    const response = await messageController.deleteAllMessages(req.body.userId);
+    res.status(response.statusCode).send(response);
+  }
+);
+messageRouter.get(
+  "/messages/custom-questions",
+  verifyToken,
+  async (req: Request, res: Response) => {
+    const response = await messageController.allCustomQuestions(req.body.userId);
+    res.status(response.statusCode).send(response);
+  }
+);
+

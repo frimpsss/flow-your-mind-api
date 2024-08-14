@@ -5,6 +5,7 @@ const whiteList = [
   "http://localhost:3000",
   "https://flow-your-mind-test.vercel.app",
   "https://flow-your-mind.vercel.app",
+  "https://anon.frimps.xyz"
 ];
 export const corsOptions: CorsOptions = {
   origin(requestOrigin, callback) {

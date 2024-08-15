@@ -167,7 +167,7 @@ export class MessageController {
 
       return new CustomResponse(HttpStatusCode.Ok, "User id retrieved", true, {
         userId: founduser.id,
-        question: foundQuestion?.title,
+        question: foundQuestion,
       });
     } catch (error: any) {
       return new CustomResponse(

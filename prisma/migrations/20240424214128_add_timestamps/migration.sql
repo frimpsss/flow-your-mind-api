@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Message" ADD COLUMN     "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,31 +8,31 @@ datasource db {
 }
 
 model User {
-  id        String     @unique @default(cuid())
+  id        String     @id @default(cuid())
   username  String     @unique
   password  String
   messages  Message[]
   tokens    String[]   @default([])
-  createdOn DateTime?  @default(now())
+  createdOn DateTime   @default(now())
   questions Question[]
 }
 
 model Message {
-  id           String    @unique @default(cuid())
+  id           String    @id @default(cuid())
   content      String
-  isOpened     Boolean?  @default(false)
+  isOpened     Boolean   @default(false)
   reciepientId String
   reciepient   User      @relation(fields: [reciepientId], references: [id], onDelete: Cascade)
-  createdOn    DateTime? @default(now())
+  createdOn    DateTime  @default(now())
   questionId   String?
   question     Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
 
 model Question {
-  id        String    @unique @default(cuid())
+  id        String    @id @default(cuid())
   title     String
   messages  Message[]
-  createdOn DateTime? @default(now())
+  createdOn DateTime  @default(now())
   userId    String?
   user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

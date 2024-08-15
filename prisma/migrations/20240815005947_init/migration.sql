@@ -4,38 +4,35 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "tokens" TEXT[] DEFAULT ARRAY[]::TEXT[],
-    "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP
+    "createdOn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Message" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "isOpened" BOOLEAN DEFAULT false,
+    "isOpened" BOOLEAN NOT NULL DEFAULT false,
     "reciepientId" TEXT NOT NULL,
-    "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "questionId" TEXT
+    "createdOn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "questionId" TEXT NOT NULL,
+
+    CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Question" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT
+    "createdOn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Question_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Message_id_key" ON "Message"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Question_id_key" ON "Question"("id");
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_reciepientId_fkey" FOREIGN KEY ("reciepientId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

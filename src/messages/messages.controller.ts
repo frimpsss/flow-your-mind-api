@@ -22,7 +22,7 @@ export class MessageController {
         data: {
           content: encryptedMessage,
           reciepientId: id,
-          questionId: qId ? qId.id : null,
+          questionId: qId != undefined ? qId.id : (undefined as any),
         },
       });
       return new CustomResponse(

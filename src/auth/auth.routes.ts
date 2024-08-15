@@ -27,7 +27,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     return res
       .cookie("auth", refresh_token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 60 * 60 * 60,
+        maxAge: 15 * 24 * 60 * 60 * 1000,
         path: "/",
         secure: true,
         sameSite: "strict",
@@ -55,7 +55,7 @@ authRouter.get("/refresh", async (req: Request, res: Response) => {
     return res
       .cookie("auth", response?.data?.new_refresh_token, {
         httpOnly: true,
-        maxAge: 60 * 60 * 60 * 60 * 60,
+        maxAge: 15 * 24 * 60 * 60 * 1000,
         path: "/",
         secure: true,
         sameSite: "strict",

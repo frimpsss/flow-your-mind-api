@@ -1,12 +1,9 @@
-/*
-  Warnings:
+-- Step 1: Add the column allowing NULL values
+ALTER TABLE "Question" ADD COLUMN "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN "title" TEXT;
 
-  - Added the required column `title` to the `Question` table without a default value. This is not possible if the table is not empty.
+-- Step 2: Update existing rows with a proper title
+UPDATE "Question" SET "title" = 'Default Title' WHERE "title" IS NULL;
 
-*/
--- AlterTable
-ALTER TABLE "Message" ADD COLUMN     "questionId" TEXT NOT NULL DEFAULT '00001';
-
--- AlterTable
-ALTER TABLE "Question" ADD COLUMN     "createdOn" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "title" TEXT NOT NULL;
+-- Step 3: Alter the column to NOT NULL
+ALTER TABLE "Question" ALTER COLUMN "title" SET NOT NULL;
